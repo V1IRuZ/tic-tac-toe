@@ -1,3 +1,4 @@
+// Create gameboard
 const Gameboard = (function () {
     let gameBoard = ['','','','','','','','',''];
 
@@ -8,4 +9,44 @@ const Gameboard = (function () {
     }
 })();
 
+// Create player objects
+const players = (function () {
+
+    const playerOne = function (name) {
+        const marker = "X";
+        
+        return {
+            name,
+            marker
+        }
+    }
+
+    const playerTwo = function (name) {
+        const marker = "O";
+
+        return {
+            name, 
+            marker
+        }
+    }
+
+    const player1 = playerOne("Mike");
+    const player2 = playerTwo("John");
+
+    const getPlayers = () => {
+        return  {
+            player1,
+            player2
+        }
+    }
+
+    return {
+        getPlayers
+    }
+
+})();
+
+
+// Take player inputs
+// Flow of a game
 
