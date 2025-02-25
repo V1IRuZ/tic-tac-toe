@@ -1,6 +1,16 @@
 // Create gameboard
 const Gameboard = (function () {
-    let gameBoard = ['','','','','','','','',''];
+    const rows = 3;
+    const columns = 3;
+    const gameBoard = [];
+    let cell = ""
+
+    for (let i = 0; i < rows; i++) {
+        gameBoard[i] = [];
+        for (let j = 0; j < columns; j++) {
+            gameBoard[i].push(cell);
+        }        
+    }
 
     const getGameBoard = () => gameBoard;
     
