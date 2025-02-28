@@ -70,12 +70,37 @@ function Gamecontroller () {
     const playRound = () => {
         setMarker(activePlayer);
     }
-    
 
- 
+    const board = getGameBoard();
+
+    let gameRunning = true
+
+    const checkWinningConditions = () => {
+            for (let i = 0; i < board.length; i++) {
+
+                // Check rows 
+                const allRowsEqual = board[i].every(value => value === (player1.marker || player2.marker))
+                if(allRowsEqual) {
+                    gameRunning = false
+                    return console.log(`${activePlayer.name} is winner!`)
+
+                // Check columns
+                } else if (board[0][i] && board[1][i] && board[2][i] === (player1.marker || player2.marker)) {
+                    gameRunning = false
+                    return console.log(`${activePlayer.name} is winner!`)
+                
+                //Check diagonals
+                } else if (board[0][0] && board[1][1] && board[2][2] || board[0][2] && board[1][1] && board[2][0] === (player1.marker || player2.marker)) {
+                    gameRunning = false
+                    return console.log(`${activePlayer.name} is winner!`)
+                }    
+            }
+        }
+        
     return {
        getActivePlayer,
-       playRound
+       playRound,
+       checkWinningConditions
     }
 }
 
