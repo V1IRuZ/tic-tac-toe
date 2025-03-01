@@ -14,17 +14,18 @@ const Gameboard = (function () {
     const getGameBoard = () => gameBoard;
 
     const setMarker = (player) => {
-        const rowValue = +prompt("Pick a row (between 0 - 2) ");
-        const columnValue = +prompt("Pick a columns between 0 - 2");
-        const markerValue = player.marker
-        
-            let markedSpot = gameBoard[rowValue][columnValue];
-            if(!markedSpot) {
-                return gameBoard[rowValue][columnValue] = markerValue;
-                
-            } else {
-                console.log("Spot has been used ")
-            }  
+        let rowValue;
+        let columnValue;
+
+            while(true) {
+                rowValue = +prompt("Pick a row (between 0 - 2) ");
+                columnValue = +prompt("Pick a columns between 0 - 2");
+                if (!gameBoard[rowValue][columnValue]){
+                    gameBoard[rowValue][columnValue] = player.marker;
+                    break;  
+                }
+                console.log("Spot has been used")
+            }
     } 
 
     return {
@@ -76,25 +77,38 @@ function Gamecontroller () {
 
     const checkWinningConditions = () => {
             for (let i = 0; i < board.length; i++) {
-
                 // Check rows 
-                const allRowsEqual = board[i].every(value => value === (playerOne.marker || playerTwo.marker))
+                const allRowsEqual = board[i].every(value => value === activePlayer.marker)
                 if(allRowsEqual) {
                     gameRunning = false
                     return console.log(`${activePlayer.name} is winner!`)
+                }
 
                 // Check columns
-                } else if (board[0][i] && board[1][i] && board[2][i] === (playerOne.marker || playerTwo.marker)) {
+                let columns = []
+                columns.push(board[0][i], board[1][i], board[2][i])
+                const allColumnsEqual = columns.every(value => value === activePlayer.marker)
+                if (allColumnsEqual) {
                     gameRunning = false
                     return console.log(`${activePlayer.name} is winner!`)
+                }
+                // Reset array for next column check
+                columns = []
                 
-                //Check diagonals
-                } else if (board[0][0] && board[1][1] && board[2][2] || board[0][2] && board[1][1] && board[2][0] === (playerOne.marker || playerTwo.marker)) {
+                // Check diagonals
+                if (board[0][0] === activePlayer.marker && board[1][1] === activePlayer.marker && board[2][2] === activePlayer.marker || 
+                    board[0][2] === activePlayer.marker && board[1][1] === activePlayer.marker && board[2][0] === activePlayer.marker) {
+                    
                     gameRunning = false
                     return console.log(`${activePlayer.name} is winner!`)
-                }    
+                }
+
+                // Check if there is space on the game board / Its tie
+                const spaceOnTheBoard = board.some(row => row.includes(""));
+                if (!spaceOnTheBoard) {
+                    return console.log("Its tie!");
+                }
             }
-            console.log("No winner found")
         }
         
     return {
