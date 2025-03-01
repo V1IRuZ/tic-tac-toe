@@ -42,7 +42,7 @@ function Gamecontroller () {
    
     const playerOneName = "Mike"
     const playerTwoName = "John"
-
+    
     const playerOne = {
         name: playerOneName,
         marker: "X"
@@ -53,22 +53,21 @@ function Gamecontroller () {
         marker: "O"
     }
 
-    const player1 = playerOne
-    const player2 = playerTwo
-
-    let activePlayer = player1;
+    let activePlayer = playerOne;
 
     const switchPlayer = () => {
-        return activePlayer = activePlayer === player1 ? player2 : player1; 
+        activePlayer = activePlayer === playerOne ? playerTwo : playerOne;
+        console.log(activePlayer);
     }
 
     const getActivePlayer = () => activePlayer;
 
     const {setMarker, getGameBoard} = Gameboard;
-
     
     const playRound = () => {
         setMarker(activePlayer);
+        checkWinningConditions();
+        switchPlayer();
     }
 
     const board = getGameBoard();
@@ -79,31 +78,32 @@ function Gamecontroller () {
             for (let i = 0; i < board.length; i++) {
 
                 // Check rows 
-                const allRowsEqual = board[i].every(value => value === (player1.marker || player2.marker))
+                const allRowsEqual = board[i].every(value => value === (playerOne.marker || playerTwo.marker))
                 if(allRowsEqual) {
                     gameRunning = false
                     return console.log(`${activePlayer.name} is winner!`)
 
                 // Check columns
-                } else if (board[0][i] && board[1][i] && board[2][i] === (player1.marker || player2.marker)) {
+                } else if (board[0][i] && board[1][i] && board[2][i] === (playerOne.marker || playerTwo.marker)) {
                     gameRunning = false
                     return console.log(`${activePlayer.name} is winner!`)
                 
                 //Check diagonals
-                } else if (board[0][0] && board[1][1] && board[2][2] || board[0][2] && board[1][1] && board[2][0] === (player1.marker || player2.marker)) {
+                } else if (board[0][0] && board[1][1] && board[2][2] || board[0][2] && board[1][1] && board[2][0] === (playerOne.marker || playerTwo.marker)) {
                     gameRunning = false
                     return console.log(`${activePlayer.name} is winner!`)
                 }    
             }
+            console.log("No winner found")
         }
         
     return {
        getActivePlayer,
-       playRound,
-       checkWinningConditions
+       playRound
     }
 }
 
+const game = Gamecontroller();
 
 
 // Take player inputs
