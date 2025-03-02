@@ -28,9 +28,18 @@ const Gameboard = (function () {
             }
     } 
 
+    const resetGameBoard = () => {
+        for (let i = 0; i < gameBoard.length; i++) {
+            for (let j = 0; j < gameBoard[i].length; j++) {
+                gameBoard[i][j] = "";
+            }
+         }
+    }
+
     return {
         getGameBoard,
-        setMarker
+        setMarker,
+        resetGameBoard
     }
 })();
 
@@ -63,12 +72,17 @@ function Gamecontroller () {
 
     const getActivePlayer = () => activePlayer;
 
-    const {setMarker, getGameBoard} = Gameboard;
+    const {setMarker, getGameBoard, resetGameBoard} = Gameboard;
     
     const playRound = () => {
+        if (gameRunning) {
         setMarker(activePlayer);
         checkWinningConditions();
         switchPlayer();
+        console.log(Gameboard.getGameBoard());
+        } else {
+            console.log("Game over.")
+        }     
     }
 
     const board = getGameBoard();
