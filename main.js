@@ -43,10 +43,6 @@ const Gameboard = (function () {
     }
 })();
 
-// Create player objects
-
-
-// Playround
 
 function Gamecontroller () {
    
@@ -131,9 +127,10 @@ function Gamecontroller () {
     }
 }
 
+const DisplayController = (function() {
+
+})
+
 const game = Gamecontroller();
 
-
-// Take player inputs
-// Flow of a game
 
