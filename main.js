@@ -126,10 +126,40 @@ function Gamecontroller () {
        playRound
     }
 }
-
+// Printtaa pelilauta array näytölle
+// pelaa kierros 
 const DisplayController = (function() {
+    const squares = document.querySelectorAll(".square");
 
-})
+    const board = Gameboard.getGameBoard();
+    const {getActivePlayer, playRound} = Gamecontroller();
+
+    // let index = 0
+    // board.forEach(row => {
+    //     row.forEach(value => {
+    //         squares[index].textContent = value;
+    //         console.log(value);
+    //         index++;
+    //     })
+    // })
+    let activePlayer = getActivePlayer();
+    
+    const getMarkerPosition = () => {
+        squares.forEach(square => {
+            square.addEventListener("click", (e) => {
+                square.textContent = `${activePlayer.marker}`;
+                const row = e.target.getAttribute("data-row");
+                const column = e.target.getAttribute("data-column");
+                console.log(row, column);
+            } )    
+    })
+    }
+
+    getMarkerPosition();
+
+
+
+})();
 
 const game = Gamecontroller();
 
