@@ -40,6 +40,10 @@
     isolation: isolate;
   }
 
+  :root {
+    --system-ui: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
   /* Page */
   .page {
     margin: 0 auto;
@@ -48,6 +52,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: var(--system-ui);
   }
 
   .container {
@@ -61,4 +66,8 @@
 
   .square {
     border: 2px solid lightslategray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 6rem;
   }

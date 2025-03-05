@@ -13,20 +13,9 @@ const Gameboard = (function () {
 
     const getGameBoard = () => gameBoard;
 
-    const setMarker = (player) => {
-        let rowValue;
-        let columnValue;
-
-            while(true) {
-                rowValue = +prompt("Pick a row (between 0 - 2) ");
-                columnValue = +prompt("Pick a columns between 0 - 2");
-                if (!gameBoard[rowValue][columnValue]){
-                    gameBoard[rowValue][columnValue] = player.marker;
-                    break;  
-                }
-                console.log("Spot has been used")
-            }
-    } 
+    const setMarker = (player, row, column) => {
+        gameBoard[row][column] = player.marker;
+    }
 
     const resetGameBoard = () => {
         for (let i = 0; i < gameBoard.length; i++) {
@@ -59,20 +48,24 @@ function Gamecontroller () {
         marker: "O"
     }
 
-    let activePlayer = playerOne;
-
-    const switchPlayer = () => {
-        activePlayer = activePlayer === playerOne ? playerTwo : playerOne;
-        console.log(activePlayer);
+    const game = {
+        running: true,
+        activePlayer: playerOne
     }
 
-    const getActivePlayer = () => activePlayer;
+    const switchPlayer = () => {
+        game.activePlayer = game.activePlayer === playerOne ? playerTwo : playerOne;
+        console.log(game.activePlayer);
+    }
 
-    const {setMarker, getGameBoard, resetGameBoard} = Gameboard;
+    const getActivePlayer = () => game.activePlayer;
+
+    const getGameRunning = () => game.running;
+
+    const {getGameBoard, resetGameBoard} = Gameboard;
     
     const playRound = () => {
-        if (gameRunning) {
-        setMarker(activePlayer);
+        if (game.running) {
         checkWinningConditions();
         switchPlayer();
         console.log(Gameboard.getGameBoard());
@@ -83,39 +76,38 @@ function Gamecontroller () {
 
     const board = getGameBoard();
 
-    let gameRunning = true
-
     const checkWinningConditions = () => {
             for (let i = 0; i < board.length; i++) {
                 // Check rows 
-                const allRowsEqual = board[i].every(value => value === activePlayer.marker)
+                const allRowsEqual = board[i].every(value => value === game.activePlayer.marker)
                 if(allRowsEqual) {
-                    gameRunning = false
-                    return console.log(`${activePlayer.name} is winner!`)
+                    game.running = false
+                    return console.log(`${game.activePlayer.name} is winner!`)
                 }
 
                 // Check columns
                 let columns = []
                 columns.push(board[0][i], board[1][i], board[2][i])
-                const allColumnsEqual = columns.every(value => value === activePlayer.marker)
+                const allColumnsEqual = columns.every(value => value === game.activePlayer.marker)
                 if (allColumnsEqual) {
-                    gameRunning = false
-                    return console.log(`${activePlayer.name} is winner!`)
+                    game.running = false
+                    return console.log(`${game.activePlayer.name} is winner!`)
                 }
                 // Reset array for next column check
                 columns = []
                 
                 // Check diagonals
-                if (board[0][0] === activePlayer.marker && board[1][1] === activePlayer.marker && board[2][2] === activePlayer.marker || 
-                    board[0][2] === activePlayer.marker && board[1][1] === activePlayer.marker && board[2][0] === activePlayer.marker) {
+                if (board[0][0] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][2] === game.activePlayer.marker || 
+                    board[0][2] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][0] === game.activePlayer.marker) {
                     
-                    gameRunning = false
-                    return console.log(`${activePlayer.name} is winner!`)
+                    game.running = false
+                    return console.log(`${game.activePlayer.name} is winner!`)
                 }
 
                 // Check if there is space on the game board / Its tie
                 const spaceOnTheBoard = board.some(row => row.includes(""));
                 if (!spaceOnTheBoard) {
+                    game.running = false;
                     return console.log("Its tie!");
                 }
             }
@@ -123,7 +115,8 @@ function Gamecontroller () {
         
     return {
        getActivePlayer,
-       playRound
+       playRound,
+       getGameRunning
     }
 }
 // Printtaa pelilauta array näytölle
@@ -132,31 +125,35 @@ const DisplayController = (function() {
     const squares = document.querySelectorAll(".square");
 
     const board = Gameboard.getGameBoard();
-    const {getActivePlayer, playRound} = Gamecontroller();
+    const {getActivePlayer, playRound, getGameRunning} = Gamecontroller();
 
-    // let index = 0
-    // board.forEach(row => {
-    //     row.forEach(value => {
-    //         squares[index].textContent = value;
-    //         console.log(value);
-    //         index++;
-    //     })
-    // })
-    let activePlayer = getActivePlayer();
+    let row;
+    let column;
     
-    const getMarkerPosition = () => {
+    // Ensikerralla Korjaa, ettei pelietene, jos pelaaja valitsee käytetyn paikan.
+    const render = () => {
         squares.forEach(square => {
             square.addEventListener("click", (e) => {
-                square.textContent = `${activePlayer.marker}`;
-                const row = e.target.getAttribute("data-row");
-                const column = e.target.getAttribute("data-column");
-                console.log(row, column);
+                square.textContent = `${getActivePlayer().marker}`;
+                row = e.target.getAttribute("data-row");
+                column = e.target.getAttribute("data-column");
+                const activePlayer = getActivePlayer();
+                const gameRunning = getGameRunning();
+
+
+                if (!board[row][column] && gameRunning) {
+                    setMarker(activePlayer, row, column);
+                    playRound();
+                }                 
+                
             } )    
     })
     }
 
-    getMarkerPosition();
+    const {setMarker} = Gameboard
 
+    
+    render()
 
 
 })();
