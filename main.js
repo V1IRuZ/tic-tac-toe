@@ -119,8 +119,7 @@ function Gamecontroller () {
        getGameRunning
     }
 }
-// Printtaa pelilauta array näytölle
-// pelaa kierros 
+
 const DisplayController = (function() {
     const squares = document.querySelectorAll(".square");
 
@@ -129,25 +128,27 @@ const DisplayController = (function() {
 
     let row;
     let column;
-    
-    // Ensikerralla Korjaa, ettei pelietene, jos pelaaja valitsee käytetyn paikan.
+
     const render = () => {
         squares.forEach(square => {
             square.addEventListener("click", (e) => {
-                square.textContent = `${getActivePlayer().marker}`;
                 row = e.target.getAttribute("data-row");
                 column = e.target.getAttribute("data-column");
                 const activePlayer = getActivePlayer();
                 const gameRunning = getGameRunning();
 
-
-                if (!board[row][column] && gameRunning) {
-                    setMarker(activePlayer, row, column);
-                    playRound();
-                }                 
-                
-            } )    
-    })
+                if (gameRunning) {
+                    if (!board[row][column]) {
+                        square.textContent = `${activePlayer.marker}`;
+                        setMarker(activePlayer, row, column);
+                        playRound()
+                        console.log(board);
+                    } else {
+                        console.log("Spot has been used!");
+                    }
+                }
+            })    
+        })
     }
 
     const {setMarker} = Gameboard
