@@ -1,9 +1,9 @@
-// Create gameboard
 const Gameboard = (function () {
     const rows = 3;
     const columns = 3;
     const gameBoard = [];
 
+    // Create 2D gameboard array
     for (let i = 0; i < rows; i++) {
         gameBoard[i] = [];
         for (let j = 0; j < columns; j++) {
@@ -11,8 +11,10 @@ const Gameboard = (function () {
         }        
     }
 
+    // A function that just reads the values ​​from the game board
     const getGameBoard = () => gameBoard;
 
+    // Update game board array
     const setMarker = (player, row, column) => {
         gameBoard[row][column] = player.marker;
     }
@@ -37,6 +39,7 @@ function Gamecontroller () {
    
     const playerOneName = "Mike"
     const playerTwoName = "John"
+    const board = Gameboard.getGameBoard();
     
     const playerOne = {
         name: playerOneName,
@@ -55,26 +58,11 @@ function Gamecontroller () {
 
     const switchPlayer = () => {
         game.activePlayer = game.activePlayer === playerOne ? playerTwo : playerOne;
-        console.log(game.activePlayer);
     }
 
     const getActivePlayer = () => game.activePlayer;
 
     const getGameRunning = () => game.running;
-
-    const {getGameBoard, resetGameBoard} = Gameboard;
-    
-    const playRound = () => {
-        if (game.running) {
-        checkWinningConditions();
-        switchPlayer();
-        console.log(Gameboard.getGameBoard());
-        } else {
-            console.log("Game over.")
-        }     
-    }
-
-    const board = getGameBoard();
 
     const checkWinningConditions = () => {
             for (let i = 0; i < board.length; i++) {
@@ -104,7 +92,7 @@ function Gamecontroller () {
                     return console.log(`${game.activePlayer.name} is winner!`)
                 }
 
-                // Check if there is space on the game board / Its tie
+                // Check if there is space on the game board / In other words, it's a draw.
                 const spaceOnTheBoard = board.some(row => row.includes(""));
                 if (!spaceOnTheBoard) {
                     game.running = false;
@@ -112,37 +100,57 @@ function Gamecontroller () {
                 }
             }
         }
+
+    const playRound = () => {
+        if (game.running) {
+        checkWinningConditions();
+        switchPlayer();
+        console.log(Gameboard.getGameBoard());
+        } else {
+            console.log("Game over.")
+        }     
+    }
         
     return {
        getActivePlayer,
-       playRound,
-       getGameRunning
+       getGameRunning,
+       playRound
     }
 }
 
 const DisplayController = (function() {
     const squares = document.querySelectorAll(".square");
 
-    const board = Gameboard.getGameBoard();
+    // Extract functions from Gameboard.
+    const {getGameBoard, setMarker} = Gameboard
+    const board = getGameBoard();
+
+    // Extract functions from Gamecontroller.
     const {getActivePlayer, playRound, getGameRunning} = Gamecontroller();
 
-    let row;
-    let column;
-
     const render = () => {
+        let row;
+        let column;
+        
         squares.forEach(square => {
             square.addEventListener("click", (e) => {
+
+                // Take the location values ​​from the attributes into the 2D array of the game board.
                 row = e.target.getAttribute("data-row");
                 column = e.target.getAttribute("data-column");
+
                 const activePlayer = getActivePlayer();
                 const gameRunning = getGameRunning();
 
                 if (gameRunning) {
+                    // Check if the square on the game board is marked.
                     if (!board[row][column]) {
                         square.textContent = `${activePlayer.marker}`;
+
+                         // Update game board array
                         setMarker(activePlayer, row, column);
                         playRound()
-                        console.log(board);
+                        
                     } else {
                         console.log("Spot has been used!");
                     }
@@ -150,15 +158,13 @@ const DisplayController = (function() {
             })    
         })
     }
-
-    const {setMarker} = Gameboard
-
-    
+  
     render()
-
 
 })();
 
-const game = Gamecontroller();
-
-
+// 1. Luo scoreboard
+//     - lisää pelaaja objekteihin pisteytys
+//     -lisää pisteen aktiiviselle pelaajalle, voiton varmistettua
+//     - nollaa pelilauta, kierroksen päätteeksi
+//     - näytä pisteet  
