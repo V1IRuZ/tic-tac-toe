@@ -48,16 +48,27 @@
   .page {
     margin: 0 auto;
     width: clamp(700px, 75%, 1440px);
-    min-height: 100vh;
     display: flex;
+    flex-direction: column;
+    gap: 40px;
     justify-content: center;
     align-items: center;
     font-family: var(--system-ui);
   }
 
+  .scoreboard {
+    display: flex;
+    margin-top: 1em;
+    padding: 1em;
+    gap: 1em;
+    border: 2px solid greenyellow;
+    background-color: black;
+    color: greenyellow;
+  }
+
   .container {
-    width: 750px;
-    height: 750px;
+    width: 600px;
+    height: 600px;
     border: 2px solid lightslategray;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
