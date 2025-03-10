@@ -19,15 +19,15 @@ const Gameboard = (function () {
         gameBoard[row][column] = player.marker;
     }
 
-    const resetGameBoard = () => {
+    const resetGameBoard = (obj) => {
 
-        if (resetBoard) {
+        if (!obj.running) {
             for (let i = 0; i < gameBoard.length; i++) {
                 for (let j = 0; j < gameBoard[i].length; j++) {
                     gameBoard[i][j] = "";
                 }
             }
-        }  
+        }
     }
 
     return {
@@ -63,7 +63,6 @@ function Gamecontroller () {
     const game = {
         running: true,
         activePlayer: playerOne,
-        rounds: 5
     }
 
     const switchPlayer = () => {
@@ -127,10 +126,10 @@ function Gamecontroller () {
         console.log(Gameboard.getGameBoard());
         console.log(game.running);
         } 
-        
-        if (!game.running) {
-            resetGameBoard();
-        }
+        resetGameBoard(game);
+        // if (!game.running) {
+        //     resetGameBoard();
+        // }
          
     }
 
