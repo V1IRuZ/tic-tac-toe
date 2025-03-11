@@ -110,7 +110,7 @@ function Gamecontroller () {
                     return console.log(`${game.activePlayer.name} is winner!`)
                 }
 
-                // Check if there is space on the game board / In other words, it's a draw.
+                // Check if there is space on the game board / In other words, if it's a draw.
                 const spaceOnTheBoard = board.some(row => row.includes(""));
                 if (!spaceOnTheBoard) {
                     game.running = false;
@@ -120,16 +120,17 @@ function Gamecontroller () {
         }
 
     const playRound = () => {
+        const {enableNextRoundBtn} = DisplayController;
+
         if (game.running) {
         checkWinningConditions();
         switchPlayer();
         console.log(Gameboard.getGameBoard());
         console.log(game.running);
-        } 
+        }
+        enableNextRoundBtn(game); 
         resetGameBoard(game);
-        // if (!game.running) {
-        //     resetGameBoard();
-        // }
+
          
     }
 
@@ -171,7 +172,7 @@ const DisplayController = (function() {
             const gameRunning = getGameRunning();
 
             if (gameRunning) {
-                nextRoundBtn.disabled = true;
+                // nextRoundBtn.disabled = true;
                 // Check if the square on the game board is marked.
                 if (!board[row][column]) {
                     square.style.color = activePlayer.color;
@@ -185,21 +186,29 @@ const DisplayController = (function() {
                     console.log("Spot has been used!");
                 }
             }
-
-            if (!gameRunning) {
-                nextRoundBtn.disabled = false;
-            }
-
+         
             player1Score.textContent = `${player1.name} score: ${player1.score}`;
             player2Score.textContent = `${player2.name} score: ${player2.score}`;
         })    
     })
 
- 
+    
     nextRoundBtn.addEventListener("click", () => {
         squares.forEach(square => square.textContent = "");
         continueGame(true);
     })
+
+    const enableNextRoundBtn = (obj) => {
+        if (obj.running) {
+            nextRoundBtn.disabled = true;
+        } else {
+            nextRoundBtn.disabled = false;
+        }
+    }
+
+    return  {
+        enableNextRoundBtn
+    }
 
 })();
 
