@@ -29,6 +29,23 @@
             <div class="square" data-row="2" data-column="2"></div>
         </div>
         <div class="display-text">
+            <button class="start-game">Start game</button>
+            <dialog class="players-modal" id="modal">
+                <form action="" method="dialog">
+                    <div>
+                        <label for="player1">Player 1</label>
+                        <input type="text" id="player1">
+                    </div>
+                    <div>
+                        <label for="player2">Player 2</label>
+                        <input type="text">
+                    </div>
+                    <div>
+                        <button type="submit" id="submit">Start</button>
+                        <button class="close">Close</button>
+                    </div>
+                </form>
+            </dialog>
             <button class="next-round">Next round</button>
         </div>
     </div>

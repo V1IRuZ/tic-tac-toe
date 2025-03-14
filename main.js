@@ -37,41 +37,42 @@ const Gameboard = (function () {
     }
 })();
 
-
 function Gamecontroller () {
-   
-    const playerOneName = "Mike"
-    const playerTwoName = "John"
 
     const {getGameBoard, resetGameBoard} = Gameboard
     const board = getGameBoard();
-    
-    const playerOne = {
-        name: playerOneName,
-        marker: "X",
-        score: 0,
-        color: "red"
-    }
 
-    const playerTwo = {
-        name: playerTwoName,
-        marker: "O",
-        score: 0,
-        color: "blue"
-    }
+    let players = [
+        {
+            name: playerOneName = "Player1",
+            marker: "X",
+            score: 0,
+            color: "red"
+        },
+        {
+            name: playerTwoName = "Player2",
+            marker: "O",
+            score: 0,
+            color: "blue"
+        }
+    ];
+
+
 
     const game = {
-        running: true,
-        activePlayer: playerOne,
+        running: false,
+        activePlayer: players[0]
     }
+    
 
+  
     const switchPlayer = () => {
-        game.activePlayer = game.activePlayer === playerOne ? playerTwo : playerOne;
+        game.activePlayer = game.activePlayer === players[0] ? players[1] : players[0];
     }
 
-    const getPlayerOne = () => playerOne;
+    const getPlayerOne = () => players[0];
 
-    const getPlayerTwo = () => playerTwo;
+    const getPlayerTwo = () => players[1];
 
     const getActivePlayer = () => game.activePlayer;
 
@@ -127,11 +128,12 @@ function Gamecontroller () {
         switchPlayer();
         console.log(Gameboard.getGameBoard());
         console.log(game.running);
+        console.log(players);
         }
+
+        // Once a winner has been found, the game board must be reset and the next round button must be enabled.
         enableNextRoundBtn(game); 
         resetGameBoard(game);
-
-         
     }
 
     return {
@@ -148,7 +150,10 @@ const DisplayController = (function() {
     const squares = document.querySelectorAll(".square");
     const player1Score = document.querySelector(".player1>p");
     const player2Score = document.querySelector(".player2>p");
+    const startGameBtn = document.querySelector(".start-game");
     const nextRoundBtn = document.querySelector(".next-round");
+    const playersModal = document.querySelector(".players-modal");
+    const closeBtn = document.querySelector(".close")
 
     // Extract functions from Gameboard.
     const {getGameBoard, setMarker} = Gameboard
@@ -159,8 +164,6 @@ const DisplayController = (function() {
     const player1 = getPlayerOne();
     const player2 = getPlayerTwo();
 
-    // Display scoreboard
-
     squares.forEach(square => {
         square.addEventListener("click", (e) => {
 
@@ -170,7 +173,7 @@ const DisplayController = (function() {
 
             const activePlayer = getActivePlayer();
             const gameRunning = getGameRunning();
-
+            
             if (gameRunning) {
                 // nextRoundBtn.disabled = true;
                 // Check if the square on the game board is marked.
@@ -186,12 +189,21 @@ const DisplayController = (function() {
                     console.log("Spot has been used!");
                 }
             }
-         
+
+            // Display scoreboard
             player1Score.textContent = `${player1.name} score: ${player1.score}`;
             player2Score.textContent = `${player2.name} score: ${player2.score}`;
         })    
     })
 
+    startGameBtn.addEventListener("click", () => {
+        playersModal.showModal();
+        continueGame(true);
+    })
+
+    closeBtn.addEventListener("click", () => {
+        playersModal.close();
+    })
     
     nextRoundBtn.addEventListener("click", () => {
         squares.forEach(square => square.textContent = "");
@@ -212,8 +224,3 @@ const DisplayController = (function() {
 
 })();
 
-// 1. Luo scoreboard
-//     - lisää pelaaja objekteihin pisteytys
-//     -lisää pisteen aktiiviselle pelaajalle, voiton varmistettua
-//     - nollaa pelilauta, kierroksen päätteeksi
-//     - näytä pisteet  
