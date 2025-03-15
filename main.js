@@ -44,27 +44,35 @@ function Gamecontroller () {
 
     let players = [
         {
-            name: playerOneName = "Player1",
+            name: "Player 1",
             marker: "X",
-            score: 0,
-            color: "red"
+            score: 0
         },
         {
-            name: playerTwoName = "Player2",
+            name: "Player 2",
             marker: "O",
-            score: 0,
-            color: "blue"
+            score: 0
         }
     ];
-
-
 
     const game = {
         running: false,
         activePlayer: players[0]
     }
     
+    const addPlayerNames = (playerOneName, playerTwoName) => {
+        const {enableNextRoundBtn} = DisplayController;
 
+        game.running = false;
+        resetGameBoard(game);
+        enableNextRoundBtn(game);
+
+        game.activePlayer = players[0];
+        players[0].score = 0;
+        players[1].score = 0;
+        players[0].name = playerOneName;
+        players[1].name = playerTwoName;
+    }
   
     const switchPlayer = () => {
         game.activePlayer = game.activePlayer === players[0] ? players[1] : players[0];
@@ -142,27 +150,40 @@ function Gamecontroller () {
        getActivePlayer,
        getGameRunning,
        continueGame,
-       playRound
+       playRound,
+       addPlayerNames
     }
 }
 
 const DisplayController = (function() {
     const squares = document.querySelectorAll(".square");
-    const player1Score = document.querySelector(".player1>p");
-    const player2Score = document.querySelector(".player2>p");
+    const p1Name = document.querySelector(".player1-name>p");
+    const p1Score = document.querySelector(".player1-score>p");
+    const p2Name = document.querySelector(".player2-name>p");
+    const p2Score = document.querySelector(".player2-score>p");
+    const playerTurn = document.querySelector(".player-turn>p");
     const startGameBtn = document.querySelector(".start-game");
     const nextRoundBtn = document.querySelector(".next-round");
     const playersModal = document.querySelector(".players-modal");
-    const closeBtn = document.querySelector(".close")
+    const closeBtn = document.querySelector(".close");
+    const form = document.querySelector("form");
 
     // Extract functions from Gameboard.
     const {getGameBoard, setMarker} = Gameboard
     const board = getGameBoard();
 
     // Extract functions from Gamecontroller.
-    const {getPlayerOne, getPlayerTwo, getActivePlayer, playRound, getGameRunning, continueGame} = Gamecontroller();
+    const {getPlayerOne, getPlayerTwo, getActivePlayer, playRound, getGameRunning, continueGame, addPlayerNames} = Gamecontroller();
     const player1 = getPlayerOne();
     const player2 = getPlayerTwo();
+    
+    const displayScore = () => {
+        p1Name.textContent = `${player1.name}`;
+        p1Score.textContent = `${player1.score}`;
+        p2Name.textContent = `${player2.name}`;
+        p2Score.textContent = `${player2.score}`;
+        playerTurn.textContent = `${getActivePlayer().name}'s turn (${getActivePlayer().marker})`;
+    } 
 
     squares.forEach(square => {
         square.addEventListener("click", (e) => {
@@ -178,7 +199,6 @@ const DisplayController = (function() {
                 // nextRoundBtn.disabled = true;
                 // Check if the square on the game board is marked.
                 if (!board[row][column]) {
-                    square.style.color = activePlayer.color;
                     square.textContent = `${activePlayer.marker}`;
 
                     // Update game board array
@@ -191,24 +211,53 @@ const DisplayController = (function() {
             }
 
             // Display scoreboard
-            player1Score.textContent = `${player1.name} score: ${player1.score}`;
-            player2Score.textContent = `${player2.name} score: ${player2.score}`;
+            displayScore();
         })    
     })
 
     startGameBtn.addEventListener("click", () => {
         playersModal.showModal();
-        continueGame(true);
     })
 
-    closeBtn.addEventListener("click", () => {
+    form.addEventListener("submit", (e) => {
+        let player1Name = document.querySelector("#player1").value;
+        let player2Name = document.querySelector("#player2").value;
+
+        // Enter default values ​​if no input values ​​were given.
+        if (!player1Name) {
+            player1Name = "Player 1"
+        }
+
+        if (!player2Name) {
+            player2Name = "Player 2"
+        }
+
+        addPlayerNames(player1Name, player2Name);
+
+        // Reset "DOM gameboard"
+        resetDomBoard();
+        displayScore();
+        continueGame(true);
+
+        e.preventDefault();
+        form.reset();
         playersModal.close();
+        
+    })
+
+    closeBtn.addEventListener("click", (e) => {
+        playersModal.close();
+        e.preventDefault();
     })
     
     nextRoundBtn.addEventListener("click", () => {
-        squares.forEach(square => square.textContent = "");
+        resetDomBoard();
         continueGame(true);
     })
+
+    const resetDomBoard = () => {
+        squares.forEach(square => square.textContent = "");
+    }
 
     const enableNextRoundBtn = (obj) => {
         if (obj.running) {
@@ -217,6 +266,8 @@ const DisplayController = (function() {
             nextRoundBtn.disabled = false;
         }
     }
+
+    nextRoundBtn.disabled = true;
 
     return  {
         enableNextRoundBtn
