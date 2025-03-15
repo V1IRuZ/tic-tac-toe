@@ -89,11 +89,13 @@ function Gamecontroller () {
     const continueGame = (value) => {game.running = value};
 
     const checkWinningConditions = () => {
+        const {getWinner} = DisplayController;
             for (let i = 0; i < board.length; i++) {
                 // Check rows 
                 const allRowsEqual = board[i].every(value => value === game.activePlayer.marker)
                 if(allRowsEqual) {
                     game.activePlayer.score++
+                    getWinner(`${game.activePlayer.name} wins the round!`);
                     game.running = false
                     return console.log(`${game.activePlayer.name} is winner!`)
                 }
@@ -104,6 +106,7 @@ function Gamecontroller () {
                 const allColumnsEqual = columns.every(value => value === game.activePlayer.marker)
                 if (allColumnsEqual) {
                     game.activePlayer.score++
+                    getWinner(`${game.activePlayer.name} wins the round!`);
                     game.running = false
                     return console.log(`${game.activePlayer.name} is winner!`)
                 }
@@ -115,6 +118,7 @@ function Gamecontroller () {
                     board[0][2] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][0] === game.activePlayer.marker) {
                     
                     game.activePlayer.score++
+                    getWinner(`${game.activePlayer.name} wins the round!`);
                     game.running = false
                     return console.log(`${game.activePlayer.name} is winner!`)
                 }
@@ -122,6 +126,7 @@ function Gamecontroller () {
                 // Check if there is space on the game board / In other words, if it's a draw.
                 const spaceOnTheBoard = board.some(row => row.includes(""));
                 if (!spaceOnTheBoard) {
+                    getWinner("Draw!");
                     game.running = false;
                     return console.log("Its tie!");
                 }
@@ -167,6 +172,9 @@ const DisplayController = (function() {
     const playersModal = document.querySelector(".players-modal");
     const closeBtn = document.querySelector(".close");
     const form = document.querySelector("form");
+    const winnerModal = document.querySelector(".winner-modal");
+    const closeWinnerModal = document.querySelector(".close-winner-modal");
+    const winnerText = document.querySelector(".winner-modal>p");
 
     // Extract functions from Gameboard.
     const {getGameBoard, setMarker} = Gameboard
@@ -200,7 +208,6 @@ const DisplayController = (function() {
                 // Check if the square on the game board is marked.
                 if (!board[row][column]) {
                     square.textContent = `${activePlayer.marker}`;
-
                     // Update game board array
                     setMarker(activePlayer, row, column);
                     playRound()
@@ -213,6 +220,16 @@ const DisplayController = (function() {
             // Display scoreboard
             displayScore();
         })    
+    })
+
+    const getWinner = (text) => {
+        winnerText.textContent = `${text}`;
+        winnerModal.showModal();
+    }
+
+    closeWinnerModal.addEventListener("click", (e) => {
+        winnerModal.close();
+        e.preventDefault();
     })
 
     startGameBtn.addEventListener("click", () => {
@@ -270,7 +287,8 @@ const DisplayController = (function() {
     nextRoundBtn.disabled = true;
 
     return  {
-        enableNextRoundBtn
+        enableNextRoundBtn,
+        getWinner
     }
 
 })();

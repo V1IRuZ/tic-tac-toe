@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'Retro Gaming';
+  src: url('fonts/RetroGaming.woff2') format('woff2'),
+      url('fonts/RetroGaming.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /*
   Josh's Custom CSS Reset
   https://www.joshwcomeau.com/css/custom-css-reset/
@@ -59,7 +68,7 @@
     gap: 40px;
     justify-content: center;
     align-items: center;
-    font-family: var(--system-ui);
+    font-family: "Retro Gaming", var(--system-ui);
   }
 
   .scoreboard {
@@ -121,4 +130,32 @@
     align-items: center;
     font-size: 6rem;
     color: var(--green);
+  }
+
+  .game-buttons {
+    display: flex;
+    gap: 1em;
+  }
+
+  .game-buttons button {
+    cursor: pointer;
+    color: var(--green);
+    border: 2px solid var(--green);
+    background-color: var(--black);
+    font-size: 1.1rem;
+    padding: 8px 16px;
+  }
+
+  dialog {
+    margin: 0 auto;
+    top: 20vh;
+    padding: 1.5em;
+    color: var(--green);
+    background-color: var(--black);
+    border: 2px solid var(--green);
+  }
+
+  ::backdrop {
+    background-color: var(--black);
+    opacity: 0.9;
   }
