@@ -124,6 +124,7 @@
   }
 
   .square {
+    cursor: pointer;
     border: 2px solid var(--green);
     display: flex;
     justify-content: center;
@@ -137,7 +138,7 @@
     gap: 1em;
   }
 
-  .game-buttons button {
+  button {
     cursor: pointer;
     color: var(--green);
     border: 2px solid var(--green);
@@ -146,13 +147,74 @@
     padding: 8px 16px;
   }
 
+  button:disabled,
+  button:disabled:hover {
+    cursor: default;
+    background-color: var(--green);
+    color: var(--black);
+  }
+
+  button:hover {
+    background-color: hsl(0, 0%, 16%);
+    color: hsl(80, 60%, 55%);
+  }
+
+  .winner-modal button {
+    padding: 0.5em 2em;
+  }
+
+  /* Modals */
+
+  form {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    gap: 1em;
+  }
+  
+  form > div {
+    display: grid; 
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+  }
+
+  input[type=text] {
+    background-color: var(--black);
+    color: var(--green);
+    border: 2px solid var(--green);
+    outline: none;
+    height: 40px;
+  }
+
+  .new-game-btns {
+    display: flex;
+    gap: 1.5em;
+  }
+
+  form > div+div {
+    grid-row: 3/4;
+  }
+
+  form > div+div+div {
+    grid-row: 4/5;
+  }
+
   dialog {
     margin: 0 auto;
-    top: 20vh;
+    top: 30vh;
     padding: 1.5em;
     color: var(--green);
     background-color: var(--black);
     border: 2px solid var(--green);
+  }
+
+  .winner-modal {
+    justify-items: center;
+    font-size: 1.2rem;
+    gap: 1.2em;
+  }
+  
+  .winner-modal p{
+    margin-bottom: 1em;
   }
 
   ::backdrop {

@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="player-turn">
-                <p>Player 1's turn</p>    
+                <p>Player 1's turn (X)</p>    
             </div>  
         </div>
         <div class="container">
@@ -44,13 +44,14 @@
             <div class="square" data-row="2" data-column="2"></div>
             <dialog class="winner-modal">
                 <p></p>
-                <button class="close-winner-modal">Close</button>
+                <button class="close-winner-modal">OK</button>
             </dialog>
         </div>
         <div class="game-buttons">
-            <button class="start-game">Start game</button>
+            <button class="start-game">New game</button>
             <dialog class="players-modal" id="modal">
                 <form action="" method="dialog">
+                    <h1>Add players</h1>
                     <div>
                         <label for="player1">Player 1 (X)</label>
                         <input type="text" id="player1">
@@ -59,7 +60,7 @@
                         <label for="player2">Player 2 (O)</label>
                         <input type="text" id="player2">
                     </div>
-                    <div>
+                    <div class="new-game-btns">
                         <button type="submit" id="submit">Start</button>
                         <button class="close">Close</button>
                     </div>
