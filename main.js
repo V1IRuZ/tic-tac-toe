@@ -1,17 +1,9 @@
 const Gameboard = (function () {
-    const rows = 3;
-    const columns = 3;
-    const gameBoard = [];
 
-    // Create 2D gameboard array
-    for (let i = 0; i < rows; i++) {
-        gameBoard[i] = [];
-        for (let j = 0; j < columns; j++) {
-                gameBoard[i].push("");     
-        }        
-    }
+    const gameBoard = [['', '', ''],
+                       ['', '', ''],
+                       ['', '', '']];
 
-    // A function that just reads the values ​​from the game board
     const getGameBoard = () => gameBoard;
 
     // Update game board array
@@ -20,7 +12,7 @@ const Gameboard = (function () {
     }
 
     const resetGameBoard = (obj) => {
-
+        // If the game is not in active mode, we reset the game board
         if (!obj.running) {
             for (let i = 0; i < gameBoard.length; i++) {
                 for (let j = 0; j < gameBoard[i].length; j++) {
@@ -60,21 +52,26 @@ function Gamecontroller () {
         activePlayer: players[0]
     }
     
-    const addPlayerNames = (playerOneName, playerTwoName) => {
+    const startNewGame = (playerOneName, playerTwoName) => {
         const {enableNextRoundBtn} = DisplayController;
 
         game.running = false;
         resetGameBoard(game);
         enableNextRoundBtn(game);
 
+        // By default, player 1 starts a new game
         game.activePlayer = players[0];
+
+        // Player 1
         players[0].score = 0;
-        players[1].score = 0;
         players[0].name = playerOneName;
+
+        // Player 2
+        players[1].score = 0;
         players[1].name = playerTwoName;
     }
   
-    const switchPlayer = () => {
+    const switchPlayerTurn = () => {
         game.activePlayer = game.activePlayer === players[0] ? players[1] : players[0];
     }
 
@@ -89,46 +86,54 @@ function Gamecontroller () {
     const continueGame = (value) => {game.running = value};
 
     const checkWinningConditions = () => {
+        // Extract winner modal
         const {getWinner} = DisplayController;
+
             for (let i = 0; i < board.length; i++) {
-                // Check rows 
+                // For a win, we add a point to the active player, provide a modal notification of the round win, and deactivate the game.
+
+                // 1. Check rows 
                 const allRowsEqual = board[i].every(value => value === game.activePlayer.marker)
+
                 if(allRowsEqual) {
                     game.activePlayer.score++
                     getWinner(`${game.activePlayer.name} wins the round!`);
                     game.running = false
-                    return console.log(`${game.activePlayer.name} is winner!`)
                 }
 
-                // Check columns
+                // 2. Check columns
                 let columns = []
+
+                // For each iteration of the loop, we add column values ​​to the array and check for the possible win.
                 columns.push(board[0][i], board[1][i], board[2][i])
+
                 const allColumnsEqual = columns.every(value => value === game.activePlayer.marker)
+
                 if (allColumnsEqual) {
                     game.activePlayer.score++
                     getWinner(`${game.activePlayer.name} wins the round!`);
                     game.running = false
-                    return console.log(`${game.activePlayer.name} is winner!`)
                 }
+
                 // Reset array for next column check
                 columns = []
                 
-                // Check diagonals
+                // 3. Check diagonals
                 if (board[0][0] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][2] === game.activePlayer.marker || 
                     board[0][2] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][0] === game.activePlayer.marker) {
                     
                     game.activePlayer.score++
                     getWinner(`${game.activePlayer.name} wins the round!`);
                     game.running = false
-                    return console.log(`${game.activePlayer.name} is winner!`)
                 }
 
-                // Check if there is space on the game board / In other words, if it's a draw.
+                // 4. Check if there is space on the game board / In other words, if it's a draw.
+                // No points are awarded for a draw.
                 const spaceOnTheBoard = board.some(row => row.includes(""));
+
                 if (!spaceOnTheBoard) {
                     getWinner("Draw!");
                     game.running = false;
-                    return console.log("Its tie!");
                 }
             }
         }
@@ -138,10 +143,7 @@ function Gamecontroller () {
 
         if (game.running) {
         checkWinningConditions();
-        switchPlayer();
-        console.log(Gameboard.getGameBoard());
-        console.log(game.running);
-        console.log(players);
+        switchPlayerTurn();
         }
 
         // Once a winner has been found, the game board must be reset and the next round button must be enabled.
@@ -156,7 +158,7 @@ function Gamecontroller () {
        getGameRunning,
        continueGame,
        playRound,
-       addPlayerNames
+       startNewGame
     }
 }
 
@@ -167,7 +169,7 @@ const DisplayController = (function() {
     const p2Name = document.querySelector(".player2-name>p");
     const p2Score = document.querySelector(".player2-score>p");
     const playerTurn = document.querySelector(".player-turn>p");
-    const startGameBtn = document.querySelector(".start-game");
+    const newGameBtn = document.querySelector(".start-game");
     const nextRoundBtn = document.querySelector(".next-round");
     const playersModal = document.querySelector(".players-modal");
     const closeBtn = document.querySelector(".close");
@@ -181,7 +183,7 @@ const DisplayController = (function() {
     const board = getGameBoard();
 
     // Extract functions from Gamecontroller.
-    const {getPlayerOne, getPlayerTwo, getActivePlayer, playRound, getGameRunning, continueGame, addPlayerNames} = Gamecontroller();
+    const {getPlayerOne, getPlayerTwo, getActivePlayer, playRound, getGameRunning, continueGame, startNewGame} = Gamecontroller();
     const player1 = getPlayerOne();
     const player2 = getPlayerTwo();
     
@@ -210,10 +212,7 @@ const DisplayController = (function() {
                     square.textContent = `${activePlayer.marker}`;
                     // Update game board array
                     setMarker(activePlayer, row, column);
-                    playRound()
-
-                } else {
-                    console.log("Spot has been used!");
+                    playRound();
                 }
             }
 
@@ -222,6 +221,13 @@ const DisplayController = (function() {
         })    
     })
 
+    nextRoundBtn.disabled = true;
+
+    const resetDomBoard = () => {
+        squares.forEach(square => square.textContent = "");
+    }
+
+    // Winner modal
     const getWinner = (text) => {
         winnerText.textContent = `${text}`;
         winnerModal.showModal();
@@ -232,7 +238,8 @@ const DisplayController = (function() {
         e.preventDefault();
     })
 
-    startGameBtn.addEventListener("click", () => {
+    // Add players / start new game modal
+    newGameBtn.addEventListener("click", () => {
         playersModal.showModal();
     })
 
@@ -242,24 +249,24 @@ const DisplayController = (function() {
 
         // Enter default values ​​if no input values ​​were given.
         if (!player1Name) {
-            player1Name = "Player 1"
+            player1Name = "Player 1";
         }
 
         if (!player2Name) {
-            player2Name = "Player 2"
+            player2Name = "Player 2";
         }
 
-        addPlayerNames(player1Name, player2Name);
+        startNewGame(player1Name, player2Name);
 
-        // Reset "DOM gameboard"
+        // Reset "DOM gameboard", update names and scores in the scoreboard and activate the game"
         resetDomBoard();
         displayScore();
         continueGame(true);
 
+        // Prevent form submission to server, reset form inputs and close modal
         e.preventDefault();
         form.reset();
         playersModal.close();
-        
     })
 
     closeBtn.addEventListener("click", (e) => {
@@ -272,10 +279,7 @@ const DisplayController = (function() {
         continueGame(true);
     })
 
-    const resetDomBoard = () => {
-        squares.forEach(square => square.textContent = "");
-    }
-
+    // Function, controls when the next round can be activated. When the results of the current game round are obtained, the next round button is activated.
     const enableNextRoundBtn = (obj) => {
         if (obj.running) {
             nextRoundBtn.disabled = true;
@@ -283,8 +287,6 @@ const DisplayController = (function() {
             nextRoundBtn.disabled = false;
         }
     }
-
-    nextRoundBtn.disabled = true;
 
     return  {
         enableNextRoundBtn,
