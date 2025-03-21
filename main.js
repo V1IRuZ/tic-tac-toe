@@ -1,22 +1,22 @@
-const Gameboard = (function () {
+const gameBoard = (function () {
 
-    const gameBoard = [['', '', ''],
+    const boardArray = [['', '', ''],
                        ['', '', ''],
                        ['', '', '']];
 
-    const getGameBoard = () => gameBoard;
+    const getGameBoard = () => boardArray;
 
     // Update game board array
     const setMarker = (player, row, column) => {
-        gameBoard[row][column] = player.marker;
+        boardArray[row][column] = player.marker;
     }
 
     const resetGameBoard = (obj) => {
         // If the game is not in active mode, we reset the game board
         if (!obj.running) {
-            for (let i = 0; i < gameBoard.length; i++) {
-                for (let j = 0; j < gameBoard[i].length; j++) {
-                    gameBoard[i][j] = "";
+            for (let i = 0; i < boardArray.length; i++) {
+                for (let j = 0; j < boardArray[i].length; j++) {
+                    boardArray[i][j] = "";
                 }
             }
         }
@@ -29,9 +29,9 @@ const Gameboard = (function () {
     }
 })();
 
-function Gamecontroller () {
+function gameController () {
 
-    const {getGameBoard, resetGameBoard} = Gameboard
+    const {getGameBoard, resetGameBoard} = gameBoard
     const board = getGameBoard();
 
     let players = [
@@ -83,7 +83,8 @@ function Gamecontroller () {
 
     const getGameRunning = () => game.running;
 
-    const continueGame = (value) => {game.running = value};
+    const continueGame = (value) => {
+        game.running = value};
 
     const checkWinningConditions = () => {
         // Extract winner modal
@@ -117,24 +118,27 @@ function Gamecontroller () {
 
                 // Reset array for next column check
                 columns = []
+            }
+
+            // 3. Check diagonals
+            if (board[0][0] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][2] === game.activePlayer.marker || 
+                board[0][2] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][0] === game.activePlayer.marker) {
                 
-                // 3. Check diagonals
-                if (board[0][0] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][2] === game.activePlayer.marker || 
-                    board[0][2] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][0] === game.activePlayer.marker) {
-                    
-                    game.activePlayer.score++
-                    getWinner(`${game.activePlayer.name} wins the round!`);
-                    game.running = false
-                }
+                game.activePlayer.score++
+                getWinner(`${game.activePlayer.name} wins the round!`);
+                game.running = false
+                console.log("diagonals: true");
+                console.log(game.activePlayer.score);
+            }
 
-                // 4. Check if there is space on the game board / In other words, if it's a draw.
-                // No points are awarded for a draw.
-                const spaceOnTheBoard = board.some(row => row.includes(""));
+            // 4. Check if there is space on the game board / In other words, if it's a draw.
+            // No points are awarded for a draw.
+            const spaceOnTheBoard = board.some(row => row.includes(""));
 
-                if (!spaceOnTheBoard) {
-                    getWinner("Draw!");
-                    game.running = false;
-                }
+            if (!spaceOnTheBoard) {
+                getWinner("Draw!");
+                game.running = false;
+                console.log("Draw");
             }
         }
 
@@ -179,11 +183,11 @@ const DisplayController = (function() {
     const winnerText = document.querySelector(".winner-modal>p");
 
     // Extract functions from Gameboard.
-    const {getGameBoard, setMarker} = Gameboard
+    const {getGameBoard, setMarker} = gameBoard
     const board = getGameBoard();
 
     // Extract functions from Gamecontroller.
-    const {getPlayerOne, getPlayerTwo, getActivePlayer, playRound, getGameRunning, continueGame, startNewGame} = Gamecontroller();
+    const {getPlayerOne, getPlayerTwo, getActivePlayer, playRound, getGameRunning, continueGame, startNewGame} = gameController();
     const player1 = getPlayerOne();
     const player2 = getPlayerTwo();
     
