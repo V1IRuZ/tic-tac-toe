@@ -94,7 +94,14 @@
 
   .player1-name,
   .player2-name {
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+            line-clamp: 1;
     font-size: 1.5rem;
+    max-width: 10ch; 
   }
 
   .player1-score,
