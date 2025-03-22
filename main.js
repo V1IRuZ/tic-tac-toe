@@ -96,7 +96,7 @@ function gameController () {
                 // 1. Check rows 
                 const allRowsEqual = board[i].every(value => value === game.activePlayer.marker)
 
-                if(allRowsEqual) {
+                if(allRowsEqual && game.running) {
                     game.activePlayer.score++
                     getWinner(`${game.activePlayer.name} wins the round!`);
                     game.running = false
@@ -110,7 +110,7 @@ function gameController () {
 
                 const allColumnsEqual = columns.every(value => value === game.activePlayer.marker)
 
-                if (allColumnsEqual) {
+                if (allColumnsEqual && game.running) {
                     game.activePlayer.score++
                     getWinner(`${game.activePlayer.name} wins the round!`);
                     game.running = false
@@ -121,8 +121,8 @@ function gameController () {
             }
 
             // 3. Check diagonals
-            if (board[0][0] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][2] === game.activePlayer.marker || 
-                board[0][2] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][0] === game.activePlayer.marker) {
+            if (board[0][0] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][2] === game.activePlayer.marker && game.running || 
+                board[0][2] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][0] === game.activePlayer.marker && game.running) {
                 
                 game.activePlayer.score++
                 getWinner(`${game.activePlayer.name} wins the round!`);
@@ -135,7 +135,7 @@ function gameController () {
             // No points are awarded for a draw.
             const spaceOnTheBoard = board.some(row => row.includes(""));
 
-            if (!spaceOnTheBoard) {
+            if (!spaceOnTheBoard && game.running) {
                 getWinner("Draw!");
                 game.running = false;
                 console.log("Draw");
