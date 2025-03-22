@@ -1,15 +1,15 @@
 const gameBoard = (function () {
 
     const boardArray = [['', '', ''],
-                       ['', '', ''],
-                       ['', '', '']];
+                        ['', '', ''],
+                        ['', '', '']];
 
     const getGameBoard = () => boardArray;
 
     // Update game board array
     const setMarker = (player, row, column) => {
         boardArray[row][column] = player.marker;
-    }
+    };
 
     const resetGameBoard = (obj) => {
         // If the game is not in active mode, we reset the game board
@@ -20,18 +20,19 @@ const gameBoard = (function () {
                 }
             }
         }
-    }
+    };
 
     return {
         getGameBoard,
         setMarker,
         resetGameBoard
-    }
+    };
+
 })();
 
 function gameController () {
 
-    const {getGameBoard, resetGameBoard} = gameBoard
+    const {getGameBoard, resetGameBoard} = gameBoard;
     const board = getGameBoard();
 
     let players = [
@@ -50,7 +51,7 @@ function gameController () {
     const game = {
         running: false,
         activePlayer: players[0]
-    }
+    };
     
     const startNewGame = (playerOneName, playerTwoName) => {
         const {enableNextRoundBtn} = DisplayController;
@@ -69,22 +70,21 @@ function gameController () {
         // Player 2
         players[1].score = 0;
         players[1].name = playerTwoName;
-    }
+    };
   
     const switchPlayerTurn = () => {
         game.activePlayer = game.activePlayer === players[0] ? players[1] : players[0];
-    }
+    };
 
-    const getPlayerOne = () => players[0];
-
-    const getPlayerTwo = () => players[1];
+    const getPlayers = () => players;
 
     const getActivePlayer = () => game.activePlayer;
 
     const getGameRunning = () => game.running;
 
     const continueGame = (value) => {
-        game.running = value};
+        game.running = value;
+    };
 
     const checkWinningConditions = () => {
         // Extract winner modal
@@ -97,13 +97,13 @@ function gameController () {
                 const allRowsEqual = board[i].every(value => value === game.activePlayer.marker)
 
                 if(allRowsEqual && game.running) {
-                    game.activePlayer.score++
+                    game.activePlayer.score++;
                     getWinner(`${game.activePlayer.name} wins the round!`);
-                    game.running = false
+                    game.running = false;
                 }
 
                 // 2. Check columns
-                let columns = []
+                let columns = [];
 
                 // For each iteration of the loop, we add column values ​​to the array and check for the possible win.
                 columns.push(board[0][i], board[1][i], board[2][i])
@@ -111,24 +111,22 @@ function gameController () {
                 const allColumnsEqual = columns.every(value => value === game.activePlayer.marker)
 
                 if (allColumnsEqual && game.running) {
-                    game.activePlayer.score++
+                    game.activePlayer.score++;
                     getWinner(`${game.activePlayer.name} wins the round!`);
-                    game.running = false
+                    game.running = false;
                 }
 
                 // Reset array for next column check
-                columns = []
+                columns = [];
             }
 
             // 3. Check diagonals
             if (board[0][0] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][2] === game.activePlayer.marker && game.running || 
                 board[0][2] === game.activePlayer.marker && board[1][1] === game.activePlayer.marker && board[2][0] === game.activePlayer.marker && game.running) {
                 
-                game.activePlayer.score++
+                game.activePlayer.score++;
                 getWinner(`${game.activePlayer.name} wins the round!`);
-                game.running = false
-                console.log("diagonals: true");
-                console.log(game.activePlayer.score);
+                game.running = false;
             }
 
             // 4. Check if there is space on the game board / In other words, if it's a draw.
@@ -138,7 +136,6 @@ function gameController () {
             if (!spaceOnTheBoard && game.running) {
                 getWinner("Draw!");
                 game.running = false;
-                console.log("Draw");
             }
         }
 
@@ -156,8 +153,7 @@ function gameController () {
     }
 
     return {
-       getPlayerOne,
-       getPlayerTwo,
+       getPlayers,
        getActivePlayer,
        getGameRunning,
        continueGame,
@@ -183,13 +179,13 @@ const DisplayController = (function() {
     const winnerText = document.querySelector(".winner-modal>p");
 
     // Extract functions from Gameboard.
-    const {getGameBoard, setMarker} = gameBoard
+    const {getGameBoard, setMarker} = gameBoard;
     const board = getGameBoard();
 
     // Extract functions from Gamecontroller.
-    const {getPlayerOne, getPlayerTwo, getActivePlayer, playRound, getGameRunning, continueGame, startNewGame} = gameController();
-    const player1 = getPlayerOne();
-    const player2 = getPlayerTwo();
+    const {getPlayers, getActivePlayer, playRound, getGameRunning, continueGame, startNewGame} = gameController();
+    const player1 = getPlayers()[0];
+    const player2 = getPlayers()[1];
     
     const displayScore = () => {
         p1Name.textContent = `${player1.name}`;

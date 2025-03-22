@@ -55,21 +55,24 @@
     --green: #8bba2e;
   }
 
+  /* Page */
+
   body {
     background-color: var(--black);
   }
 
-  /* Page */
   .page {
     margin: 0 auto;
     width: clamp(700px, 75%, 1440px);
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 2.5em;
     justify-content: center;
     align-items: center;
     font-family: "Retro Gaming", var(--system-ui);
   }
+
+  /* Scoreboard */
 
   .scoreboard {
     display: grid;
@@ -114,6 +117,8 @@
     font-size: 1.2rem;
   }
 
+  /* Game board  */
+
   .container {
     width: 600px;
     height: 600px;
@@ -133,6 +138,8 @@
     color: var(--green);
   }
 
+  /* buttons */
+
   .game-buttons {
     display: flex;
     gap: 1em;
@@ -144,7 +151,7 @@
     border: 2px solid var(--green);
     background-color: var(--black);
     font-size: 1.1rem;
-    padding: 8px 16px;
+    padding: 0.5em 1em;
   }
 
   button:disabled,
