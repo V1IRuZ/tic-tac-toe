@@ -12,7 +12,7 @@ const gameBoard = (function () {
     };
 
     const resetGameBoard = (obj) => {
-        // If the game is not in active mode, we reset the game board
+        // If the game is not in active mode, reset the game board
         if (!obj.running) {
             for (let i = 0; i < boardArray.length; i++) {
                 for (let j = 0; j < boardArray[i].length; j++) {
@@ -94,7 +94,7 @@ function gameController () {
                 // For a win, we add a point to the active player, provide a modal notification of the round win, and deactivate the game.
 
                 // 1. Check rows 
-                const allRowsEqual = board[i].every(value => value === game.activePlayer.marker)
+                const allRowsEqual = board[i].every(value => value === game.activePlayer.marker);
 
                 if(allRowsEqual && game.running) {
                     game.activePlayer.score++;
@@ -137,7 +137,7 @@ function gameController () {
                 getWinner("Draw!");
                 game.running = false;
             }
-        }
+        };
 
     const playRound = () => {
         const {enableNextRoundBtn} = DisplayController;
@@ -150,7 +150,7 @@ function gameController () {
         // Once a winner has been found, the game board must be reset and the next round button must be enabled.
         enableNextRoundBtn(game); 
         resetGameBoard(game);
-    }
+    };
 
     return {
        getPlayers,
@@ -159,8 +159,8 @@ function gameController () {
        continueGame,
        playRound,
        startNewGame
-    }
-}
+    };
+};
 
 const DisplayController = (function() {
     const squares = document.querySelectorAll(".square");
@@ -193,7 +193,7 @@ const DisplayController = (function() {
         p2Name.textContent = `${player2.name}`;
         p2Score.textContent = `${player2.score}`;
         playerTurn.textContent = `${getActivePlayer().name}'s turn (${getActivePlayer().marker})`;
-    } 
+    };
 
     squares.forEach(square => {
         square.addEventListener("click", (e) => {
@@ -219,29 +219,29 @@ const DisplayController = (function() {
             // Display scoreboard
             displayScore();
         })    
-    })
+    });
 
     nextRoundBtn.disabled = true;
 
     const resetDomBoard = () => {
         squares.forEach(square => square.textContent = "");
-    }
+    };
 
     // Winner modal
     const getWinner = (text) => {
         winnerText.textContent = `${text}`;
         winnerModal.showModal();
-    }
+    };
 
     closeWinnerModal.addEventListener("click", (e) => {
         winnerModal.close();
         e.preventDefault();
-    })
+    });
 
     // Add players / start new game modal
     newGameBtn.addEventListener("click", () => {
         playersModal.showModal();
-    })
+    });
 
     form.addEventListener("submit", (e) => {
         let player1Name = document.querySelector("#player1").value;
@@ -267,17 +267,17 @@ const DisplayController = (function() {
         e.preventDefault();
         form.reset();
         playersModal.close();
-    })
+    });
 
     closeBtn.addEventListener("click", (e) => {
         playersModal.close();
         e.preventDefault();
-    })
+    });
     
     nextRoundBtn.addEventListener("click", () => {
         resetDomBoard();
         continueGame(true);
-    })
+    });
 
     // Function, controls when the next round can be activated. When the results of the current game round are obtained, the next round button is activated.
     const enableNextRoundBtn = (obj) => {
@@ -286,12 +286,12 @@ const DisplayController = (function() {
         } else {
             nextRoundBtn.disabled = false;
         }
-    }
+    };
 
     return  {
         enableNextRoundBtn,
         getWinner
-    }
+    };
 
 })();
 
